@@ -32,13 +32,60 @@ BGCOLOUR = WHITE
 CURRCOLNUM = 0
 COLOURARRAY = [GRAY, NAVYBLUE, WHITE, RED, GREEN, YELLOW, ORANGE, PURPLE, CYAN]
 
-catImg = pygame.image.load('cat.png')
-catX = 10
-catY = 10
+catImg = pygame.image.load('katamari.png')
 direction = 'right'
 
+def rot_center(image, rect, angle):
+    """rotate an image while keeping its center"""
+    rot_image = pygame.transform.rotate(image, angle)
+    rot_rect = rot_image.get_rect(center=rect.center)
+    return rot_image,rot_rect
+
+
+# Class for the player
+class Player(pygame.sprite.Sprite):
+
+    # Constructor
+    def __init__(self, pos):
+        pygame.sprite.Sprite.__init__(self)
+
+        # Load the sprite image
+        self.image = pygame.image.load('prince.png')
+        self.original = self.image
+        # Fetch the rect object that has the image's dimensions
+        #self.rect = self.image.get_rect()
+        #self.image = pygame.transform.scale(image, (168, 113))
+        self.rect = self.image.get_rect(center=pos)
+
+
+        self.angle = 0
+        self.angle_change = 0
+
+
+    # Update Method
+    def update(self):
+        if self.angle_change != 0:
+            self.angle+= self.angle_change
+            self.image = pygame.transform.rotozoom(self.original, self.angle, 1)
+            self.rect = self.image.get_rect(center=self.rect.center)
+            
+        self.rect.x = self.rect.x
+        
+
+# Class for the level background
+class Background(pygame.sprite.Sprite):
+    def __init__(self, image_file, location):
+        pygame.sprite.Sprite.__init__(self)  #call Sprite initializer
+        self.image = pygame.image.load(image_file)
+        self.rect = self.image.get_rect()
+        self.rect.left, self.rect.top = location
+
+
+
 # Load in a wav file to play as background music
-pygame.mixer.music.load('ChillingMusic.wav')
+#pygame.mixer.music.load('ChillingMusic.wav')
+pygame.mixer.music.load('LonelyRollingStar.mp3')
+pygame.mixer.music.set_volume(0.1)
 # Play the music in the background in a looping manner
 pygame.mixer.music.play(-1)
 
@@ -48,28 +95,32 @@ def closeGame():
     pygame.quit()
     sys.exit()
 
+active_sprite_list = pygame.sprite.Group()
+player = Player((WINDOWWIDTH/2, WINDOWHEIGHT/2))
+active_sprite_list.add(player)
+
+BackGround = Background('background2.png', [0,-280])
+
+effect = pygame.mixer.Sound('PickupCoin.wav')
+effect.set_volume(0.1)
+
+
 # Main Game Loop
 while True:
-    DISPLAYSURF.fill(BGCOLOUR)
+    DISPLAYSURF.fill([255, 255, 255])
+    #DISPLAYSURF.blit(BackGround.image, BackGround.rect)
 
-    if direction == 'right':
-        catX += 5
-        if catX == 280:
-            direction = 'down'
-    elif direction == 'down':
-        catY += 5
-        if catY == 220:
-            direction = 'left'
-    elif direction == 'left':
-        catX -= 5
-        if catX == 10:
-            direction = 'up'
-    elif direction == 'up':
-        catY -= 5
-        if catY == 10:
-            direction = 'right'
+    if BackGround.rect.x > -1400:
+        BackGround.rect.x -= 1
+        DISPLAYSURF.blit(BackGround.image, BackGround.rect)
+    elif BackGround.rect.x <= -1400:
+        BackGround.rect.x += 1400
+        DISPLAYSURF.blit(BackGround.image, BackGround.rect)
+        
 
-    DISPLAYSURF.blit(catImg, (catX, catY))
+
+    active_sprite_list.update()
+    active_sprite_list.draw(DISPLAYSURF)
 
     # Event handling in the game loop
     for event in pygame.event.get():
@@ -81,11 +132,15 @@ while True:
             if event.key == pygame.K_LEFT:
                 if CURRCOLNUM > 0:
                     CURRCOLNUM -= 1
-                    BGCOLOUR = COLOURARRAY[CURRCOLNUM]
+                    #BGCOLOUR = COLOURARRAY[CURRCOLNUM]
+                    player.angle_change = 3
             if event.key == pygame.K_RIGHT:
                 if CURRCOLNUM < 8:
                     CURRCOLNUM += 1
-                    BGCOLOUR = COLOURARRAY[CURRCOLNUM]
+                    #BGCOLOUR = COLOURARRAY[CURRCOLNUM]
+                    player.angle_change = -3
+            if event.key == pygame.K_SPACE:
+                effect.play()
             if event.key == pygame.K_ESCAPE:
                 closeGame()
             
