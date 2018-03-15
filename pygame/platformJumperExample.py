@@ -77,7 +77,7 @@ class Player(pygame.sprite.Sprite):
             # set our right side to the left side of the item we hit
             if self.change_x > 0:
                 #test = 1
-                #self.rect.right = block.rect.left
+                self.rect.right = block.rect.left
             elif self.change_x < 0:
                 # Otherwise if we are moving left, do the opposite.
                 self.rect.left = block.rect.right

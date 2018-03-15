@@ -4,7 +4,7 @@
 import pygame, sys
 from pygame.locals import *
 
-FPS = 60 # frames per second setting
+FPS = 120 # frames per second setting
 WINDOWWIDTH = 640 # size of the window's width in pixels
 WINDOWHEIGHT = 480 # size of the window's height in pixels
 
@@ -69,7 +69,7 @@ class Player(pygame.sprite.Sprite):
             self.image = pygame.transform.rotozoom(self.original, self.angle, 1)
             self.rect = self.image.get_rect(center=self.rect.center)
             
-        self.rect.x = self.rect.x
+        #self.rect.x = self.rect.x
         
 
 # Class for the level background
@@ -108,7 +108,8 @@ effect.set_volume(0.1)
 # Main Game Loop
 while True:
     DISPLAYSURF.fill([255, 255, 255])
-    #DISPLAYSURF.blit(BackGround.image, BackGround.rect)
+    DISPLAYSURF.blit(BackGround.image, BackGround.rect)
+
 
     if BackGround.rect.x > -1400:
         BackGround.rect.x -= 1
@@ -116,7 +117,6 @@ while True:
     elif BackGround.rect.x <= -1400:
         BackGround.rect.x += 1400
         DISPLAYSURF.blit(BackGround.image, BackGround.rect)
-        
 
 
     active_sprite_list.update()
@@ -143,6 +143,7 @@ while True:
                 effect.play()
             if event.key == pygame.K_ESCAPE:
                 closeGame()
-            
+
     pygame.display.update()
     fpsClock.tick(FPS)
+    #print(str(fpsClock.tick(FPS)))
