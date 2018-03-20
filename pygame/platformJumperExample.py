@@ -271,12 +271,12 @@ def main():
         current_level.update()
  
         # If the player gets near the right side, shift the world left (-x)
-        if player.rect.right > SCREEN_WIDTH:
-            player.rect.right = SCREEN_WIDTH
+        if player.rect.right > SCREEN_WIDTH - 10:
+            player.rect.right = SCREEN_WIDTH - 10
  
         # If the player gets near the left side, shift the world right (+x)
-        if player.rect.left < 0:
-            player.rect.left = 0
+        if player.rect.left < 10:
+            player.rect.left = 10
  
         # ALL CODE TO DRAW SHOULD GO BELOW THIS COMMENT
         current_level.draw(screen)
