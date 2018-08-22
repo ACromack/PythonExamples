@@ -5,8 +5,8 @@ import pygame, sys
 from pygame.locals import *
 
 FPS = 60 # frames per second setting
-WINDOWWIDTH = 640 # size of the window's width in pixels
-WINDOWHEIGHT = 480 # size of the window's height in pixels
+WINDOWWIDTH = 1280 # size of the window's width in pixels
+WINDOWHEIGHT = 720 # size of the window's height in pixels
 
 fpsClock = pygame.time.Clock()
 
